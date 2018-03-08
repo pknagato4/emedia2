@@ -2,31 +2,23 @@
 #include <iostream>
 
 void WaveHeaderReader::Read() {
-    char c;
-    for(int i=0;i<4;i++)
-        file_.get(header_.chunck_id_[i]);
-
+    ReadXBitToString(header_.chunck_id_, 4);
     file_.read(reinterpret_cast<char* >(&header_.chunck_size_), sizeof(header_.chunck_size_));
 
-    for(int i=0;i<4;i++)
-        file_.get(header_.format_[i]);
-
-    for(int i=0;i<4;i++) {
-        file_.get(header_.sub_chank1_id_[i]);
-    }
-
+    ReadXBitToString(header_.format_, 4);
+    ReadXBitToString(header_.sub_chank1_id_, 4);
 }
 
 void WaveHeaderReader::PrintInfo() {
-    std::cout << "ChunckID: ";
-    for(int i=0;i<4;i++)
-        std::cout<<header_.chunck_id_[i];
-    std::cout<<"\nChunck size: ";
-    std::cout<<header_.chunck_size_;
-    std::cout<<"\nFormat: ";
-    for(int i=0;i<4;i++)
-        std::cout<<header_.format_[i];
-    std::cout<<"\nSubChunck1ID: ";
-    for(int i=0;i<4;i++)
-        std::cout<<header_.sub_chank1_id_[i];
+    std::cout << "ChunckID: "<<header_.chunck_id_
+              <<"\nChunck size: "<<header_.chunck_size_
+              <<"\nFormat: "<<header_.format_
+              <<"\nSubChunck1ID: "<<header_.sub_chank1_id_;
+}
+
+void WaveHeaderReader::ReadXBitToString(std::string& str, const size_t X) {
+    char tmp[X+1] {};
+    for (int i = 0; i<X; i++)
+        file_.get(tmp[i]);
+    str = std::string(tmp);
 }

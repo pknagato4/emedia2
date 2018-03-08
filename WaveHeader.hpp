@@ -4,10 +4,10 @@
 #include <cstdint>
 
 struct WaveHeader {
-    char chunck_id_[4];
+    std::string chunck_id_;
     uint32_t chunck_size_;
-    char format_[4];
-    char sub_chank1_id_[4];
+    std::string format_;
+    std::string sub_chank1_id_;
 };
 
 
@@ -17,6 +17,8 @@ public:
             : file_(file_name, std::ios::binary|std::ios::in) {}
     void Read();
     void PrintInfo();
+    void ReadXBitToString(std::string& str, const size_t X);
+
 private:
     WaveHeader header_;
     std::fstream file_;
