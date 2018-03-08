@@ -1,9 +1,13 @@
 #pragma once
 
 #include <fstream>
+#include <cstdint>
 
 struct WaveHeader {
     char chunck_id_[4];
+    uint32_t chunck_size_;
+    char format_[4];
+    char sub_chank1_id_[4];
 };
 
 
