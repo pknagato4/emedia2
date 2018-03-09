@@ -2,20 +2,9 @@
 #include <iostream>
 
 void WaveHeaderReader::Read() {
-    ReadXBitToString(header_.chunk_id_, 4);
-    file_.read(reinterpret_cast<char* >(&header_.chunk_size_), sizeof(header_.chunk_size_));
-    ReadXBitToString(header_.format_, 4);
-    ReadXBitToString(header_.sub_chank1_id_, 4);
-    file_.read(reinterpret_cast<char* >(&header_.chunk1_size_), sizeof(uint32_t));
-    file_.read(reinterpret_cast<char* >(&header_.format_code_), sizeof(uint16_t));
-    file_.read(reinterpret_cast<char* >(&header_.number_of_channels_), sizeof(uint16_t));
-    file_.read(reinterpret_cast<char* >(&header_.samples_per_second_), sizeof(uint32_t));
-    file_.read(reinterpret_cast<char* >(&header_.bytes_per_second_), sizeof(uint32_t));
-    file_.read(reinterpret_cast<char* >(&header_.bytes_per_sample_frame_), sizeof(uint16_t));
-    file_.read(reinterpret_cast<char* >(&header_.bits_per_sample_), sizeof(uint16_t));
-    ReadXBitToString(header_.sub_chank2_id_, 4);
-    file_.read(reinterpret_cast<char* >(&header_.sub_chank2_size_), sizeof(uint32_t));
-
+    ReadMainChank();
+    ReadSubChank1();
+    ReadSubChank2();
 }
 
 void WaveHeaderReader::PrintInfo() {
@@ -31,7 +20,7 @@ void WaveHeaderReader::PrintInfo() {
               <<"\nBits per sample: "<<header_.bits_per_sample_
               <<"\nSubChank2ID: "<<header_.sub_chank2_id_
               <<"\nSubChank2Size: "<<header_.sub_chank2_size_;
-    std::cout<<"\nSamples: "<<((8*header_.sub_chank2_size_)/(header_.number_of_channels_*header_.bits_per_sample_))<<"\n";
+    std::cout<<"\nSamples: "<<header_.number_of_samples_<<"\n";
 }
 
 void WaveHeaderReader::ReadXBitToString(std::string& str, const size_t X) {
@@ -39,4 +28,40 @@ void WaveHeaderReader::ReadXBitToString(std::string& str, const size_t X) {
     for (int i = 0; i<X; i++)
         file_.get(tmp[i]);
     str = std::string(tmp);
+}
+
+void WaveHeaderReader::ReadSamples(const int number_of_samples) {
+    uint16_t sample;
+    for (int i=0;i<number_of_samples;i++) {
+        file_.read(reinterpret_cast<char* >(&sample), sizeof(sample));
+        samples_.emplace_back(sample);
+    }
+}
+
+uint32_t WaveHeaderReader::CalculateSamplesNumber() {
+    return ((8*header_.sub_chank2_size_)/(header_.number_of_channels_*header_.bits_per_sample_));
+}
+
+void WaveHeaderReader::ReadMainChank() {
+    ReadXBitToString(header_.chunk_id_, 4);
+    ReadSingleType<uint32_t >(&header_.chunk_size_);
+    ReadXBitToString(header_.format_, 4);
+}
+
+void WaveHeaderReader::ReadSubChank1() {
+    ReadXBitToString(header_.sub_chank1_id_, 4);
+    ReadSingleType<uint32_t >(&header_.chunk1_size_);
+    ReadSingleType<uint16_t >(&header_.format_code_);
+    ReadSingleType<uint16_t >(&header_.number_of_channels_);
+    ReadSingleType<uint32_t >(&header_.samples_per_second_);
+    ReadSingleType<uint32_t >(&header_.bytes_per_second_);
+    ReadSingleType<uint16_t >(&header_.bytes_per_sample_frame_);
+    ReadSingleType<uint16_t >(&header_.bits_per_sample_);
+}
+
+void WaveHeaderReader::ReadSubChank2() {
+    ReadXBitToString(header_.sub_chank2_id_, 4);
+    ReadSingleType<uint32_t >(&header_.sub_chank2_size_);
+    header_.number_of_samples_ = CalculateSamplesNumber();
+    ReadSamples(header_.number_of_samples_);
 }
