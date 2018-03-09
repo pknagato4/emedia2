@@ -1,5 +1,6 @@
 #include "WaveHeader.hpp"
 #include <iostream>
+#include <iterator>
 
 void WaveHeaderReader::Read() {
     ReadMainChank();
@@ -21,6 +22,7 @@ void WaveHeaderReader::PrintInfo() {
               <<"\nSubChank2ID: "<<header_.sub_chank2_id_
               <<"\nSubChank2Size: "<<header_.sub_chank2_size_;
     std::cout<<"\nSamples: "<<header_.number_of_samples_<<"\n";
+    SaveSamplesToFile();
 }
 
 void WaveHeaderReader::ReadXBitToString(std::string& str, const size_t X) {
@@ -64,4 +66,10 @@ void WaveHeaderReader::ReadSubChank2() {
     ReadSingleType<uint32_t >(&header_.sub_chank2_size_);
     header_.number_of_samples_ = CalculateSamplesNumber();
     ReadSamples(header_.number_of_samples_);
+}
+
+void WaveHeaderReader::SaveSamplesToFile() {
+    std::ofstream myfile("samples.txt");
+    char chg[1] {'\n'};
+    std::copy(samples_.begin(), samples_.end(), std::ostream_iterator<uint16_t>(myfile, chg));
 }

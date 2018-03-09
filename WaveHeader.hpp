@@ -40,6 +40,7 @@ private:
     void ReadMainChank();
     void ReadSubChank1();
     void ReadSubChank2();
+    void SaveSamplesToFile();
     uint32_t CalculateSamplesNumber();
 
     WaveHeader header_;
