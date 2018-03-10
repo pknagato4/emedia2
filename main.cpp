@@ -1,7 +1,7 @@
 #include "WaveHeader.hpp"
-
+#include <iostream>
 int main() {
-    WaveHeaderReader wav("disco_dancing.wav");
+    WaveReader wav("disco_dancing.wav");
     wav.Read();
     wav.PrintInfo();
 }

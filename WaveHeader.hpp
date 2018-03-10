@@ -22,9 +22,9 @@ struct WaveHeader {
 };
 
 
-class WaveHeaderReader {
+class WaveReader {
 public:
-    WaveHeaderReader(std::string file_name)
+    WaveReader(std::string file_name)
             : file_(file_name, std::ios::binary|std::ios::in) {}
     void Read();
     void PrintInfo();
@@ -42,8 +42,10 @@ private:
     void ReadSubChank2();
     void SaveSamplesToFile();
     uint32_t CalculateSamplesNumber();
+    void CalculateFFT();
 
     WaveHeader header_;
     std::fstream file_;
-    std::vector<uint16_t> samples_;
+    std::vector<int16_t > samples_;
+    std::vector<int16_t > samples2_;
 };
