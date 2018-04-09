@@ -28,7 +28,6 @@ void WaveReader::PrintInfo() {
     SaveSamplesToFile();
     CalculateFFT();
     std::cout<<"\n"<<samples_.back();
-    std::cout<<"\n"<<samples2_.back();
 }
 
 void WaveReader::ReadXBitToString(std::string& str, const size_t X) {
@@ -38,12 +37,15 @@ void WaveReader::ReadXBitToString(std::string& str, const size_t X) {
     str = std::string(tmp);
 }
 
-void WaveReader::ReadSamples(const int number_of_samples) {
+void WaveReader::ReadSamples(const int number_of_samples, const int channels) {
     int16_t sample;
-    for (int i=0;i<2*number_of_samples;i++) {
+    for (int i=0;i<channels*number_of_samples;i++) {
         file_.read(reinterpret_cast<char* >(&sample), sizeof(sample));
 
-        (i%2==0) ? samples_.emplace_back(sample) : samples2_.emplace_back(sample);
+        if (channels == 2)
+            (i%2==0) ? samples_.emplace_back(sample) : samples2_.emplace_back(sample);
+        else if (channels == 1)
+            samples_.emplace_back(sample);
     }
 }
 
@@ -70,36 +72,23 @@ void WaveReader::ReadSubChank1() {
 
 void WaveReader::ReadSubChank2() {
     ReadXBitToString(header_.sub_chank2_id_, 4);
-    ReadSingleType<uint32_t >(&header_.sub_chank2_size_);
+    if (header_.bytes_per_sample_frame_ == 4)
+        ReadSingleType<uint32_t >(&header_.sub_chank2_size_);
+    else if (header_.bytes_per_sample_frame_ == 2) {
+        uint16_t tmp;
+        ReadSingleType<uint16_t >(&tmp);
+        header_.sub_chank2_size_ = tmp;
+    }
     header_.number_of_samples_ = CalculateSamplesNumber();
-    ReadSamples(header_.number_of_samples_);
+    ReadSamples(header_.number_of_samples_, header_.number_of_channels_);
 }
 
 void WaveReader::SaveSamplesToFile() {
     std::ofstream myfile("samples.txt");
-    char chg[1] {'\n'};
-    std::copy(samples_.begin(), samples_.end(), std::ostream_iterator<int16_t >(myfile, chg));
+    std::copy(samples_.begin(), samples_.end(), std::ostream_iterator<int16_t >(myfile, "\n"));
 }
 
 void WaveReader::CalculateFFT() {
-//    Complex samples[header_.number_of_samples_];
-//    int i = 0;
-//    for(auto v : samples_) {
-//        samples[i] = v;
-//        i++;
-//    }
-//    CArray data(samples, header_.number_of_samples_);
-//    //fft
-//    fft(data);
-//
-//    std::vector<double > vec;
-//    for(auto dat : data) {
-//        vec.emplace_back(std::abs(dat));
-//    }
-//
-//    std::ofstream myfile("samples2.txt");
-//    char chg[1] {'\n'};
-//    std::copy(vec.begin(), vec.end(), std::ostream_iterator<double >(myfile, chg));
     int size = 44100;
     std::fstream file("samples.txt",std::ios::in);
     if (file.is_open()) {
@@ -108,7 +97,6 @@ void WaveReader::CalculateFFT() {
         for (int i = 0; i<size; i++) {
             file >> sample;
             v[i] = sample;
-            std::cout<<sample<<"\n";
         }
 
         CArray data(v, size);
@@ -122,8 +110,6 @@ void WaveReader::CalculateFFT() {
         }
 
         std::ofstream myfile("sample1fft.txt");
-        char chg[1] {'\n'};
-        std::copy(vec.begin(), vec.end(), std::ostream_iterator<double>(myfile, chg));
-
+        std::copy(vec.begin(), vec.end()-vec.size()/2, std::ostream_iterator<double>(myfile, "\n"));
     }
 }

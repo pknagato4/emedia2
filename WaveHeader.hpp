@@ -36,7 +36,7 @@ private:
         file_.read(reinterpret_cast<char* >(placeHolder), sizeof(Size));
     }
     void ReadXBitToString(std::string& str, const size_t X);
-    void ReadSamples(const int number_of_samples);
+    void ReadSamples(const int number_of_samples, const int channels);
     void ReadMainChank();
     void ReadSubChank1();
     void ReadSubChank2();
