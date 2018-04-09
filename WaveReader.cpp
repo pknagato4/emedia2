@@ -1,7 +1,5 @@
 #include "WaveReader.hpp"
 #include "FFT.hpp"
-#include <iostream>
-#include <iterator>
 
 void WaveReader::Read() {
     ReadMainChank();
@@ -21,12 +19,17 @@ void WaveReader::PrintInfo() {
               <<"\nBytes per sample frame: "<<header_.bytes_per_sample_frame_
               <<"\nBits per sample: "<<header_.bits_per_sample_
               <<"\nSubChank2ID: "<<header_.sub_chank2_id_
-              <<"\nSubChank2Size: "<<header_.sub_chank2_size_;
-    std::cout<<"\nSamples: "<<header_.number_of_samples_<<"\n";
-    std::cout<<"Samples 1 size: "<<samples_.size()<<"\n";
-    std::cout<<"Samples 2 size: "<<samples2_.size()<<"\n";
+              <<"\nSubChank2Size: "<<header_.sub_chank2_size_
+              <<"\nSamples: "<<header_.number_of_samples_
+              <<"\n";
     SaveSamplesToFile();
     CalculateFFT();
+}
+
+void WaveReader::SaveSamplesToFile() {
+    SaveToFile<decltype(channel1_), int16_t>(channel1_, "channel1.txt", channel1_.size());
+    if (header_.number_of_channels_ == 2)
+        SaveToFile<decltype(channel1_), int16_t>(channel2_, "channel2.txt", channel2_.size());
 }
 
 void WaveReader::ReadXBitToString(std::string& str, const size_t X) {
@@ -42,9 +45,9 @@ void WaveReader::ReadSamples(const int number_of_samples, const int channels) {
         file_.read(reinterpret_cast<char* >(&sample), sizeof(sample));
 
         if (channels == 2)
-            (i%2==0) ? samples_.emplace_back(sample) : samples2_.emplace_back(sample);
+            (i%2==0) ? channel1_.emplace_back(sample) : channel2_.emplace_back(sample);
         else if (channels == 1)
-            samples_.emplace_back(sample);
+            channel1_.emplace_back(sample);
     }
 }
 
@@ -82,33 +85,37 @@ void WaveReader::ReadSubChank2() {
     ReadSamples(header_.number_of_samples_, header_.number_of_channels_);
 }
 
-void WaveReader::SaveSamplesToFile() {
-    std::ofstream myfile("samples.txt");
-    std::copy(samples_.begin(), samples_.end(), std::ostream_iterator<int16_t >(myfile, "\n"));
+void WaveReader::CalculateFFT() {
+    CalculateFFTForChannel(channel1_, "channel1fft.txt");
+    if (header_.number_of_channels_ == 2)
+        CalculateFFTForChannel(channel2_, "channel2fft.txt");
 }
 
-void WaveReader::CalculateFFT() {
-    int size = 44100;
-    std::fstream file("samples.txt",std::ios::in);
-    if (file.is_open()) {
-        double sample;
-        Complex v[size];
-        for (int i = 0; i<size; i++) {
-            file >> sample;
-            v[i] = sample;
+void WaveReader::CalculateFFTForChannel(const std::vector<int16_t> &channel, const std::string fileName) {
+    CArray data;
+    PrepareDataToFFT(channel, data);
+
+    fft(data);
+
+    SaveFFTToFile(fileName, data);
+}
+
+void WaveReader::SaveFFTToFile(const std::string fileName, const CArray &data) {
+    std::vector<double> vec;
+    for(auto dat : data) {
+            vec.emplace_back(abs(dat));
         }
+    SaveToFile<decltype(vec), double>(vec, fileName, vec.size()/2);
+}
 
-        CArray data(v, size);
-
-        // forward fft
-        fft(data);
-
-        std::vector<double> vec;
-        for(auto dat : data) {
-            vec.emplace_back(std::abs(dat));
+void WaveReader::PrepareDataToFFT(const std::vector<int16_t> &input, CArray &output) const {
+    Complex v[header_.samples_per_second_];
+    for (int i = 0; i < header_.samples_per_second_; i++) {
+            v[i] = input[i];
         }
+    output = CArray(v, header_.samples_per_second_);
+}
 
-        std::ofstream myfile("sample1fft.txt");
-        std::copy(vec.begin(), vec.end()-vec.size()/2, std::ostream_iterator<double>(myfile, "\n"));
-    }
+const WaveHeader &WaveReader::getHeader_() const {
+    return header_;
 }
