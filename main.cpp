@@ -1,4 +1,4 @@
-#include "WaveHeader.hpp"
+#include "WaveReader.hpp"
 #include <iostream>
 
 #include "gnuplot-cpp-interface/GNUPlot/GNUPlot.h"

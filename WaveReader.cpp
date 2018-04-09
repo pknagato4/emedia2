@@ -1,4 +1,4 @@
-#include "WaveHeader.hpp"
+#include "WaveReader.hpp"
 #include "FFT.hpp"
 #include <iostream>
 #include <iterator>
@@ -27,7 +27,6 @@ void WaveReader::PrintInfo() {
     std::cout<<"Samples 2 size: "<<samples2_.size()<<"\n";
     SaveSamplesToFile();
     CalculateFFT();
-    std::cout<<"\n"<<samples_.back();
 }
 
 void WaveReader::ReadXBitToString(std::string& str, const size_t X) {
