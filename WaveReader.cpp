@@ -12,6 +12,7 @@ void WaveReader::PrintInfo() {
               <<"\nChunck size: "<<header_.chunk_size_
               <<"\nFormat: "<<header_.format_
               <<"\nSubChunck1ID: "<<header_.sub_chank1_id_
+              <<"\nSubChunck1 size: "<<header_.chunk1_size_
               <<"\nFormat Code: "<<header_.format_code_
               <<"\nNumber of channels: "<<header_.number_of_channels_
               <<"\nSamples per second: "<<header_.samples_per_second_
@@ -116,6 +117,14 @@ void WaveReader::PrepareDataToFFT(const std::vector<int16_t> &input, CArray &out
     output = CArray(v, header_.samples_per_second_);
 }
 
+const std::vector<int16_t> &WaveReader::getChannel1_() const {
+    return channel1_;
+}
+
 const WaveHeader &WaveReader::getHeader_() const {
     return header_;
+}
+
+const std::vector<int16_t> &WaveReader::getChannel2_() const {
+    return channel2_;
 }
