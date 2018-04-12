@@ -1,7 +1,7 @@
 #include "WaveReader.hpp"
 #include <iostream>
 
-#include "gnuplot-cpp-interface/GNUPlot/GNUPlot.h"
+#include "GNUPlot.h"
 
 
 std::vector<std::string> PrepareScript(const std::string fileName) {
