@@ -11,20 +11,15 @@
 
 class WaveSaver {
 public:
-        WaveSaver(std::string file_name, WaveHeader header, const std::vector<int16_t> channel1)
+        WaveSaver(std::string file_name, WaveHeader header, const std::pair<std::vector<int16_t>, std::vector<int16_t>> channels)
                 : file_name_(file_name), header_(header)
-                , channel1_(channel1), IsSingleChannel(true) {}
-        WaveSaver(std::string file_name, WaveHeader header,
-                  const std::vector<int16_t> channel1, const std::vector<int16_t> channel2)
-            : file_name_(file_name), header_(header)
-            , channel1_(channel1), channel2_(channel2), IsSingleChannel(false) {}
+                , channels_(channels), IsSingleChannel(channels.second.size() == 0 ? true : false) {}
 
         void Save();
 private:
     std::string file_name_;
     WaveHeader header_;
-    std::vector<int16_t> channel1_;
-    std::vector<int16_t> channel2_;
+    std::pair<std::vector<int16_t>, std::vector<int16_t>> channels_;
     bool IsSingleChannel;
 
     void SaveHeader(std::fstream &file) const;

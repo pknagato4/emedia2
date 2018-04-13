@@ -30,19 +30,17 @@ int main(int argc, char** argv) {
     wav.Read();
     wav.PrintInfo();
     auto header = wav.getHeader_();
-    auto samples = wav.getChannel1_();
-    auto samples2 = wav.getChannel2_();
-    std::cout << "samples 1 size: "<<samples.size() << "sampples 2 szie"<<samples2.size()<<"last chann1"<<samples.back();;
+    auto samples = wav.getChannels_();
+    std::cout << "samples 1 size: "<<samples.first.size() << "sampples 2 szie"<<samples.second.size()<<"last chann1"<<samples.first.back();
 
-    WaveSaver saver("test.wav", header, samples, samples2);
+    WaveSaver saver("test.wav", header, samples);
     saver.Save();
     std::cout<<"\n";
     WaveReader wav2("test.wav");
     wav2.Read();
     wav2.PrintInfo();
-    auto samples3 = wav.getChannel1_();
-    auto samples4 = wav.getChannel2_();
-    std::cout << "samples 1 size: "<<samples3.size() << "sampples 2 szie"<<samples4.size()<<"last chann1"<<samples3.back();
+    auto samples2 = wav.getChannels_();
+    std::cout << "samples 1 size: "<<samples2.first.size() << "sampples 2 szie"<<samples2.second.size()<<"last chann1"<<samples2.first.back();;
 
 //    plot(PrepareScript("\"channel1fft.txt\""));
 //    if (wav.getHeader_().number_of_channels_ == 2)

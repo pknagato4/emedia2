@@ -43,14 +43,14 @@ void WaveSaver::SaveSamples(std::fstream& file) {
 }
 
 void WaveSaver::SaveSingleChannel(std::fstream &file) {
-    for (const auto& sample : channel1_) {
+    for (const auto& sample : channels_.first) {
         SaveDecAsBin(file, sample);
     }
 }
 
 void WaveSaver::SaveDoubleChannel(std::fstream &file) {
-    for (int i = 0; i<channel1_.size(); i++) {
-        SaveDecAsBin(file, channel1_[i]);
-        SaveDecAsBin(file, channel2_[i]);
+    for (int i = 0; i<channels_.first.size(); i++) {
+        SaveDecAsBin(file, channels_.first[i]);
+        SaveDecAsBin(file, channels_.second[i]);
     }
 }
