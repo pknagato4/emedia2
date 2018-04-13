@@ -22,8 +22,6 @@ public:
     void PrintInfo();
     const WaveHeader &getHeader_() const;
 
-    const std::vector<int16_t> &getChannel1_() const;
-
 private:
     template<class Size>
     void ReadSingleType(Size *placeHolder) {
@@ -52,8 +50,7 @@ private:
 private:
     std::fstream file_;
     WaveHeader header_;
-    std::vector<int16_t> channel1_;
-    std::vector<int16_t> channel2_;
+    std::pair<std::vector<int16_t>, std::vector<int16_t>> channels_;
 public:
-    const std::vector<int16_t> &getChannel2_() const;
+    const std::pair<std::vector<int16_t>, std::vector<int16_t>> &getChannels_() const;
 };

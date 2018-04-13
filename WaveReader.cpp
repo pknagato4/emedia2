@@ -28,9 +28,9 @@ void WaveReader::PrintInfo() {
 }
 
 void WaveReader::SaveSamplesToFile() {
-    SaveToFile<decltype(channel1_), int16_t>(channel1_, "channel1.txt", channel1_.size());
+    SaveToFile<decltype(channels_.first), int16_t>(channels_.first, "channel1.txt", channels_.first.size());
     if (header_.number_of_channels_ == 2)
-        SaveToFile<decltype(channel1_), int16_t>(channel2_, "channel2.txt", channel2_.size());
+        SaveToFile<decltype(channels_.second), int16_t>(channels_.second, "channel2.txt", channels_.second.size());
 }
 
 void WaveReader::ReadXBitToString(std::string& str, const size_t X) {
@@ -46,9 +46,10 @@ void WaveReader::ReadSamples(const int number_of_samples, const int channels) {
         file_.read(reinterpret_cast<char* >(&sample), sizeof(sample));
 
         if (channels == 2)
-            (i%2==0) ? channel1_.emplace_back(sample) : channel2_.emplace_back(sample);
+            (i%2==0) ? channels_.first.emplace_back(sample) : channels_.second.emplace_back(sample);
+
         else if (channels == 1)
-            channel1_.emplace_back(sample);
+            channels_.first.emplace_back(sample);
     }
 }
 
@@ -87,9 +88,9 @@ void WaveReader::ReadSubChank2() {
 }
 
 void WaveReader::CalculateFFT() {
-    CalculateFFTForChannel(channel1_, "channel1fft.txt");
+    CalculateFFTForChannel(channels_.first, "channel1fft.txt");
     if (header_.number_of_channels_ == 2)
-        CalculateFFTForChannel(channel2_, "channel2fft.txt");
+        CalculateFFTForChannel(channels_.second, "channel2fft.txt");
 }
 
 void WaveReader::CalculateFFTForChannel(const std::vector<int16_t> &channel, const std::string fileName) {
@@ -117,14 +118,10 @@ void WaveReader::PrepareDataToFFT(const std::vector<int16_t> &input, CArray &out
     output = CArray(v, header_.samples_per_second_);
 }
 
-const std::vector<int16_t> &WaveReader::getChannel1_() const {
-    return channel1_;
-}
-
 const WaveHeader &WaveReader::getHeader_() const {
     return header_;
 }
 
-const std::vector<int16_t> &WaveReader::getChannel2_() const {
-    return channel2_;
+const std::pair<std::vector<int16_t>, std::vector<int16_t>> &WaveReader::getChannels_() const {
+    return channels_;
 }
