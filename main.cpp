@@ -3,6 +3,7 @@
 
 #include "GNUPlot.h"
 #include "WaveSaver.h"
+#include "Coder.h"
 
 
 std::vector<std::string> PrepareScript(const std::string fileName) {
@@ -28,19 +29,16 @@ void plot(const std::vector<std::string> &script) {
 int main(int argc, char** argv) {
     WaveReader wav(argv[1]);
     wav.Read();
-    wav.PrintInfo();
+//    wav.PrintInfo();
     auto header = wav.getHeader_();
     auto samples = wav.getChannels_();
-    std::cout << "samples 1 size: "<<samples.first.size() << "sampples 2 szie"<<samples.second.size()<<"last chann1"<<samples.first.back();
-
-    WaveSaver saver("test.wav", header, samples);
+    std::cout<<samples.first.back()<<"\n";
+    Coder coder;
+    samples = coder.Code(CodeType::XOR, samples);
+    samples = coder.Code(CodeType::XOR, samples);
+    std::cout<<samples.first.back()<<"\n";
+    WaveSaver saver("test2.wav", header, samples);
     saver.Save();
-    std::cout<<"\n";
-    WaveReader wav2("test.wav");
-    wav2.Read();
-    wav2.PrintInfo();
-    auto samples2 = wav.getChannels_();
-    std::cout << "samples 1 size: "<<samples2.first.size() << "sampples 2 szie"<<samples2.second.size()<<"last chann1"<<samples2.first.back();;
 
 //    plot(PrepareScript("\"channel1fft.txt\""));
 //    if (wav.getHeader_().number_of_channels_ == 2)
