@@ -2,10 +2,10 @@
 // Created by patryk on 14.04.18.
 //
 
-#include "Coder.h"
+#include "Encrypter.h"
 #include "MathHelper.h"
 
-samples_container Coder::Code(CodeType code_type, samples_container channels) {
+samples_container Encrypter::Code(CodeType code_type, samples_container channels) {
     samples_container coded;
     for(auto sample : channels.first) {
         coded.first.emplace_back(CodeSample(code_type, sample));
@@ -17,10 +17,12 @@ samples_container Coder::Code(CodeType code_type, samples_container channels) {
     return coded;
 }
 
-int16_t Coder::CodeSample(CodeType code_type, int16_t sample) {
+int16_t Encrypter::CodeSample(CodeType code_type, int16_t sample) {
     switch(code_type) {
         case CodeType::XOR:
-            return CodeXOR(sample);
+            if (xorCoder == nullptr)
+                xorCoder = std::make_unique<XorCoder>();
+            return xorCoder->Code(sample);
         case CodeType::RSA:
             return 0;//CodeRSA(sample);
         case CodeType::DES:
@@ -28,11 +30,4 @@ int16_t Coder::CodeSample(CodeType code_type, int16_t sample) {
         case CodeType::DES_RSA:
             return 0;
     }
-}
-
-int16_t Coder::CodeXOR(int16_t sample) {
-    if (xor_val == std::nullopt) {
-        xor_val = GetRandom<int16_t>();
-    }
-    return sample^(*xor_val);
 }

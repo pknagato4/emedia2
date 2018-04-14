@@ -3,7 +3,7 @@
 
 #include "GNUPlot.h"
 #include "WaveSaver.h"
-#include "Coder.h"
+#include "Encrypter.h"
 
 
 std::vector<std::string> PrepareScript(const std::string fileName) {
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     auto header = wav.getHeader_();
     auto samples = wav.getChannels_();
     std::cout<<samples.first.back()<<"\n";
-    Coder coder;
+    Encrypter coder;
     samples = coder.Code(CodeType::XOR, samples);
     samples = coder.Code(CodeType::XOR, samples);
     std::cout<<samples.first.back()<<"\n";

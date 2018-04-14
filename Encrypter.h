@@ -7,7 +7,10 @@
 
 #include <cstdint>
 #include <vector>
-#include <optional>
+#include <memory>
+
+#include "CoderInterface.h"
+#include "XorCoder.h"
 
 using samples_container = std::pair<std::vector<int16_t>, std::vector<int16_t>>;
 
@@ -18,13 +21,14 @@ enum class CodeType {
     DES_RSA
 };
 
-class Coder {
+
+class Encrypter {
 public:
     samples_container Code(CodeType code_type, samples_container channels);
 private:
     int16_t CodeSample(CodeType code_type, int16_t sample);
-    int16_t CodeXOR(int16_t sample);
-    std::optional<int16_t> xor_val;
+    std::unique_ptr<CoderInterface> xorCoder;
+
 };
 
 
