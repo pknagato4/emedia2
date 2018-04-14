@@ -4,6 +4,7 @@
 #include "GNUPlot.h"
 #include "WaveSaver.h"
 #include "Encrypter.h"
+#include "RsaCoder.h"
 
 
 std::vector<std::string> PrepareScript(const std::string fileName) {
@@ -43,5 +44,9 @@ int main(int argc, char** argv) {
 //    plot(PrepareScript("\"channel1fft.txt\""));
 //    if (wav.getHeader_().number_of_channels_ == 2)
 //        plot(PrepareScript("\"channel2fft.txt\""));
+
+
+    RsaCoder code;
+    code.Code(123);
 
 }

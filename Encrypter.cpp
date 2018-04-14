@@ -4,6 +4,7 @@
 
 #include "Encrypter.h"
 #include "MathHelper.h"
+#include "RsaCoder.h"
 
 samples_container Encrypter::Code(CodeType code_type, samples_container channels) {
     samples_container coded;
@@ -24,7 +25,9 @@ int16_t Encrypter::CodeSample(CodeType code_type, int16_t sample) {
                 xorCoder = std::make_unique<XorCoder>();
             return xorCoder->Code(sample);
         case CodeType::RSA:
-            return 0;//CodeRSA(sample);
+            if (rsaCoder == nullptr)
+                rsaCoder = std::make_unique<RsaCoder>();
+            return rsaCoder->Code(sample);
         case CodeType::DES:
             return 0;
         case CodeType::DES_RSA:

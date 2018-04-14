@@ -28,6 +28,7 @@ public:
 private:
     int16_t CodeSample(CodeType code_type, int16_t sample);
     std::unique_ptr<CoderInterface> xorCoder;
+    std::unique_ptr<CoderInterface> rsaCoder;
 
 };
 
