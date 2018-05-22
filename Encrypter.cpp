@@ -6,31 +6,37 @@
 #include "MathHelper.h"
 #include "RsaCoder.h"
 
-samples_container Encrypter::Code(CodeType code_type, samples_container channels) {
+samples_container Encrypter::CodeXor(samples_container channels) {
     samples_container coded;
     for(auto sample : channels.first) {
-        coded.first.emplace_back(CodeSample(code_type, sample));
+        coded.first.emplace_back(CodeSampleXor(sample));
     }
     for(auto sample : channels.second) {
-        coded.second.emplace_back(CodeSample(code_type, sample));
+        coded.second.emplace_back(CodeSampleXor(sample));
     }
-
     return coded;
 }
 
-int16_t Encrypter::CodeSample(CodeType code_type, int16_t sample) {
-    switch(code_type) {
-        case CodeType::XOR:
-            if (xorCoder == nullptr)
-                xorCoder = std::make_unique<XorCoder>();
-            return xorCoder->Code(sample);
-        case CodeType::RSA:
-            if (rsaCoder == nullptr)
-                rsaCoder = std::make_unique<RsaCoder>();
-            return rsaCoder->Code(sample);
-        case CodeType::DES:
-            return 0;
-        case CodeType::DES_RSA:
-            return 0;
+int16_t Encrypter::CodeSampleXor(int16_t sample) {
+        if (xorCoder == nullptr)
+            xorCoder = std::make_unique<XorCoder>();
+        return xorCoder->Code(sample);
+}
+
+samples_container Encrypter::CodeRsa(samples_container channels, rsa_key rsaKey) {
+    samples_container coded;
+    if (rsaCoder == nullptr)
+        rsaCoder = std::make_unique<RsaCoder>();
+    rsaCoder->setKey(rsaKey.first, rsaKey.second);
+    for(auto sample : channels.first) {
+        coded.first.emplace_back(CodeSampleRsa(sample));
     }
+    for(auto sample : channels.second) {
+        coded.second.emplace_back(CodeSampleRsa(sample));
+    }
+    return coded;
+}
+
+int16_t Encrypter::CodeSampleRsa(int16_t sample) {
+    return rsaCoder->Code(sample);
 }

@@ -11,25 +11,21 @@
 
 #include "CoderInterface.h"
 #include "XorCoder.h"
+#include "RsaCoder.h"
+#include "types.h"
 
 using samples_container = std::pair<std::vector<int16_t>, std::vector<int16_t>>;
 
-enum class CodeType {
-    XOR,
-    RSA,
-    DES,
-    DES_RSA
-};
-
-
 class Encrypter {
 public:
-    samples_container Code(CodeType code_type, samples_container channels);
+    samples_container CodeXor(samples_container channels);
+    samples_container CodeRsa(samples_container channels, rsa_key rsaKey);
 private:
-    int16_t CodeSample(CodeType code_type, int16_t sample);
-    std::unique_ptr<CoderInterface> xorCoder;
-    std::unique_ptr<CoderInterface> rsaCoder;
+    int16_t CodeSampleXor(int16_t sample);
+    int16_t CodeSampleRsa(int16_t sample);
 
+    std::unique_ptr<XorCoder> xorCoder;
+    std::unique_ptr<RsaCoder> rsaCoder;
 };
 
 

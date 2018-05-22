@@ -5,16 +5,18 @@
 #ifndef EMEDIA_RSACODER_H
 #define EMEDIA_RSACODER_H
 
-#include <utility>
 #include "CoderInterface.h"
+#include "RsaKeyGenerator.h"
 
 class RsaCoder : public CoderInterface {
 public:
+    void setKey(rsa_size_type w, rsa_size_type modulo);
     int16_t Code(int16_t) override;
-    int16_t Decode(int16_t) override{};
-private:
-    std::pair<int16_t, int16_t> prime_ = std::make_pair(static_cast<int16_t>(13), static_cast<int16_t>(11));//to remove when GetPrime will be implemented
+    int16_t Decode(int16_t) override;
 
+private:
+    rsa_size_type w;
+    rsa_size_type modulo;
 };
 
 #endif //EMEDIA_RSACODER_H

@@ -11,6 +11,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <vector>
+#include "types.h"
 
 template <class T>
 T GetRandom() {
@@ -18,11 +19,12 @@ T GetRandom() {
     return static_cast<T>(std::rand());
 }
 
-int16_t CalculateEulerFunc(int16_t p, int16_t q);
-int16_t CalculateModule(int16_t p, int16_t q);
-std::vector<int16_t> FindCoprimeList(int16_t begin, int16_t end, int16_t coPrimeWith);
+rsa_size_type CalculateEulerFunc(rsa_size_type p, rsa_size_type q);
+rsa_size_type CalculateModule(rsa_size_type p, rsa_size_type q);
+std::vector<rsa_size_type> FindCoprimeList(rsa_size_type begin, rsa_size_type end, rsa_size_type coPrimeWith);
 
-int16_t FindCoprine(int16_t eulerFunc);
+rsa_size_type FindCoprine(rsa_size_type eulerFunc);
 
-int16_t GetReverseModulo(int16_t coprime, int16_t eulerFunc);
+rsa_size_type GetReverseModulo(rsa_size_type coprime, rsa_size_type eulerFunc);
+rsa_size_type pot_mod(rsa_size_type a, rsa_size_type w, rsa_size_type n);
 #endif //EMEDIA_MATHHELPER_H

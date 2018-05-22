@@ -5,18 +5,18 @@
 #include "MathHelper.h"
 
 
-int16_t CalculateEulerFunc(int16_t p, int16_t q) {
-    return static_cast<int16_t>((p-1)*(q-1));
+rsa_size_type CalculateEulerFunc(rsa_size_type p, rsa_size_type q) {
+    return ((p-1)*(q-1));
 }
 
-int16_t CalculateModule(int16_t p, int16_t q) {
+rsa_size_type CalculateModule(rsa_size_type p, rsa_size_type q) {
     return p*q;
 }
 
-std::vector<int16_t> FindCoprimeList(int16_t begin, int16_t end, int16_t coPrimeWith) {
-    std::vector<int16_t> coPrimes;
-    int ax, bx, t;
-    for(int i = begin; i <= end; i++)
+std::vector<rsa_size_type> FindCoprimeList(rsa_size_type begin, rsa_size_type end, rsa_size_type coPrimeWith) {
+    std::vector<rsa_size_type > coPrimes;
+    rsa_size_type ax, bx, t;
+    for(auto i = begin; i <= end; i++)
     {
         ax = i; bx = coPrimeWith;
         while(bx)
@@ -30,13 +30,15 @@ std::vector<int16_t> FindCoprimeList(int16_t begin, int16_t end, int16_t coPrime
     return coPrimes;
 }
 
-int16_t FindCoprine(int16_t eulerFunc) {
-    return FindCoprimeList(1, eulerFunc,eulerFunc).back();
+rsa_size_type FindCoprine(rsa_size_type eulerFunc) {
+    rsa_size_type tmp = 1;
+    return FindCoprimeList(tmp, eulerFunc,eulerFunc).back();
 }
 
 
-int16_t GetReverseModulo(int16_t coprime, int16_t eulerFunc) {
-    int16_t u,w,x,z,q;
+rsa_size_type GetReverseModulo(rsa_size_type coprime, rsa_size_type eulerFunc) {
+    rsa_size_type u,w,x,z,q, nulll;
+    nulll = 0;
     u = 1; w = coprime;
     x = 0; z = eulerFunc;
     while(w)
@@ -55,5 +57,18 @@ int16_t GetReverseModulo(int16_t coprime, int16_t eulerFunc) {
         if(x < 0) x += eulerFunc;
         return x;
     }
-    return 0;
+    return nulll;
+}
+
+rsa_size_type pot_mod(rsa_size_type a, rsa_size_type w, rsa_size_type n)
+{
+    rsa_size_type pot,wyn,q;
+//(a^w)%n
+    pot = a; wyn = 1;
+    for(q = w; q > 0; q /= 2)
+    {
+        if(q % 2) wyn = (wyn * pot) % n;
+        pot = (pot * pot) % n;
+    }
+    return wyn;
 }
