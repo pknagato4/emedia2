@@ -27,4 +27,15 @@ rsa_size_type FindCoprine(rsa_size_type eulerFunc);
 
 rsa_size_type GetReverseModulo(rsa_size_type coprime, rsa_size_type eulerFunc);
 rsa_size_type pot_mod(rsa_size_type a, rsa_size_type w, rsa_size_type n);
+
+//od janka
+rsa_size_type Losuj(rsa_size_type a, rsa_size_type b);
+rsa_size_type MnozModulo(rsa_size_type a, rsa_size_type b, rsa_size_type n);
+rsa_size_type PotegujModulo(rsa_size_type a, rsa_size_type e, rsa_size_type n);
+rsa_size_type RSALosuj();
+rsa_size_type odwr_mod(rsa_size_type a, rsa_size_type n);
+rsa_size_type nwd(rsa_size_type a, rsa_size_type b);
+bool Miller(rsa_size_type n, rsa_size_type p);
+rsa_size_type pot_mod(rsa_size_type a, rsa_size_type w, rsa_size_type n);
+void RSA_klucz(rsa_size_type &pub, rsa_size_type &priv, rsa_size_type &n1);
 #endif //EMEDIA_MATHHELPER_H
