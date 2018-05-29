@@ -3,6 +3,7 @@
 //`1245780`
 
 
+#include <cstring>
 #include "WaveSaver.h"
 
 void WaveSaver::Save() {

@@ -118,7 +118,7 @@ rsa_size_type RSALosuj()
     srand(time(NULL));
     rsa_size_type w = 0;
     int i;
-    for (i = 1; i <= 4; i++)
+    for (i = 1; i <= 4*4; i++)
     {
         w = w << 8;
         w |= rand() % 256;

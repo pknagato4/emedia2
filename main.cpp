@@ -77,29 +77,11 @@ int main(int argc, char** argv) {
     key.public_key.first = pub;
     key.public_key.second = n1;
 
-    std::cout<<samples.first.back()<<"\n";
-    Encrypter coder;
-    auto samples2 = codeSamples(key, samples);//coder.CodeRsa(samples, key.public_key);
-//    WaveSaver saver("test_coded.wav", header, samples2);
-//    saver.Save();
+    auto samples2 = codeSamples(key, samples);
 
-    auto samples3 = decodeSamples(key, samples2);//coder.CodeRsa(samples2, key.private_key);
-    std::cout<<samples3.first.back()<<"\n";
+
+    auto samples3 = decodeSamples(key, samples2);
     WaveSaver saver2("test_encoded.wav", header, samples3);
     saver2.Save();
-
-    for (int i =0 ; i < samples3.first.size(); i++) {
-        if (samples.first.at(i) != samples3.first.at(i)) {
-            std::cout<<i<<" of "<<samples3.first.size();
-            break;
-        }
-    }
-
-////    plot(PrepareScript("\"channel1fft.txt\""));
-////    if (wav.getHeader_().number_of_channels_ == 2)
-////        plot(PrepareScript("\"channel2fft.txt\""));
-//
-//    std::cout<<"\nPrivate key: "<<key.private_key.first<<" : "<<key.private_key.second
-//             <<"\nPublic key: "<<key.public_key.first<<" : "<<key.public_key.second;
 
 }
