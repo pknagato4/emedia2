@@ -19,6 +19,6 @@ class RsaKeyGenerator {
 public:
     static RsaKey Generate(rsa_size_type first_prime, rsa_size_type second_prime);
 };
-
+        
 
 #endif //EMEDIA_RSAKEYGENERATOR_H
