@@ -1,7 +1,9 @@
-Warning!
-Boost Library && g++-7 required.
-cmake soon :)
-Compile:
-g++-7 -std=c++17 *.cpp -L/usr/local/boost_1_67_0/stage/lib -I/usr/local/boost_1_67_0
-Run:
-./a.out tested_input/*
+Opis działania programu: 
+Program otwiera plik wav podany w parametrze wywołania programu, następnie czyta z niego nagłówek oraz próbki.
+Generuje klucz RSA oraz szyfruje plik do pliku test_encoded.wav
+Deszyfruje plik i zapisuje do test_decoded.wav.
+
+Klucz RSA generowany przez program jest losowy i składa się z 256 bitów.
+
+Opis użytego algorytmu znajduje się w pliku opis.pdf
+Do kompilacji programu potrzebny jest gcc-7 oraz biblioteka boost
