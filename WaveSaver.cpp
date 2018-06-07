@@ -51,7 +51,7 @@ void WaveSaver::SaveSingleChannel(std::fstream &file) {
 }
 
 void WaveSaver::SaveDoubleChannel(std::fstream &file) {
-    for (int i = 0; i<channels_.first.size(); i++) {
+    for (int i = 0; i<header_.sub_chank2_size_/4; i++) {
         SaveDecAsBin(file, channels_.first[i]);
         SaveDecAsBin(file, channels_.second[i]);
     }

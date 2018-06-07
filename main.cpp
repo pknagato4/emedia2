@@ -137,12 +137,11 @@ std::pair<std::vector<rsa_size_type >, std::vector<rsa_size_type >> chunkSamples
 int main(int argc, char** argv) {
     WaveReader wav(argv[1]);
     wav.Read();
-//    wav.PrintInfo();
+    wav.PrintInfo();
+
     auto header = wav.getHeader_();
     auto samples = wav.getChannels_();
 
-    rsa_size_type first_prime = 11;
-    rsa_size_type second_prime = 13;
     RsaKey key ;
     rsa_size_type priv, pub, n1;
     RSA_klucz(pub, priv, n1);
@@ -159,23 +158,10 @@ int main(int argc, char** argv) {
     auto splited = splitCodedSamplesTo16bitSamples(samples2);
     auto fetched = fetchCodedSamplesTo256BitSamples(splited);
     auto samples3 = decodeSamples(key, samples2);
-    auto dechunked ;
 
-    for ( int i=0; i < fetched.first.size(); i++) {
-        if ( fetched.first[i] != samples2.first[i]) {
-            std::cout<<"error";
-            break;
-        }
-    }
-
-    std::cout<<"Coded size: "<<samples2.first.size()<<" splited size: "<<splited.first.size();
-
-
-
-    WaveSaver saver2("test_encoded.wav", header, samples3);
+    WaveSaver saver2("test_decoded.wav", header, samples3);
     saver2.Save();
-    header.sub_chank2_size_ = header.sub_chank2_size_*16;
-    WaveSaver saver("test_coded.wav", header, splited);
+    WaveSaver saver("test_encoded.wav", header, splited);
     saver.Save();
 
 
